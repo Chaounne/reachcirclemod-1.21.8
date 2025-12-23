@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "reachcirclemod",
+	"version": "${version}",
+	"name": "ReachCircleMod",
+	"description": "A mod to display the player maximum reach.",
+	"authors": [
+		"Chaounne"
+	],
+	"contact": {
+		"homepage": "https://chaounne.xyz/",
+		"sources": "https://github.com/Chaounne"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/reachcirclemod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"me.chaounne.reachcirclemod.ReachCircleMod"
+		],
+		"fabric-datagen": [
+			"me.chaounne.reachcirclemod.ReachCircleModDataGenerator"
+		],
+		"client" : [
+			"me.chaounne.reachcirclemod.ReachCircleModClient"
+		]
+	},
+	"mixins": [
+		"reachcirclemod.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.3",
+		"minecraft": "~1.21.8",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
