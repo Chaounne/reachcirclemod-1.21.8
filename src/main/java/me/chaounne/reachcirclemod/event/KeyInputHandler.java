@@ -24,32 +24,32 @@ public class KeyInputHandler {
 
     private static Boolean showCircles = false;
 
+    private static double smoothX, smoothY, smoothZ;
+    private static boolean initialized = false;
+
     public static void registerKeyInput(){
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if(circlekey.wasPressed()){
+            if (circlekey.wasPressed()) {
                 showCircles = !showCircles;
-                assert client.player != null;
-                if(showCircles){
-                    client.player.sendMessage(Text.of("Circles shown"), true);
-                } else {
-                    client.player.sendMessage(Text.of("Circles hidden"), true);
-                }
-                WorldRenderEvents.LAST.register(context -> {
-                    if(!showCircles) return;
-                    PlayerEntity player = client.player;
-
-                    if (player == null) return;
-
-                    renderCircle(
-                            context.matrixStack(),
-                            context.consumers(),
-                            context.camera(),
-                            player
-                    );
-                });
             }
-                });
+        });
+
+        WorldRenderEvents.LAST.register(context -> {
+            if(!showCircles) return;
+            MinecraftClient client = MinecraftClient.getInstance();
+            PlayerEntity player = client.player;
+
+            if (player == null) return;
+
+            renderCircle(
+                    context.matrixStack(),
+                    context.consumers(),
+                    context.camera(),
+                    player
+            );
+        });
     }
+
 
     public static void register(){
         circlekey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -62,15 +62,37 @@ public class KeyInputHandler {
         registerKeyInput();
     }
 
+    private static double lerp(double delta, double start, double end) {
+        return start + delta * (end - start);
+    }
+
+
     private static void renderCircle(
             MatrixStack matrices,
             VertexConsumerProvider consumers,
             Camera camera,
             PlayerEntity player
     ) {
-        double x = player.getX() - camera.getPos().x;
-        double y = player.getY() - camera.getPos().y;
-        double z = player.getZ() - camera.getPos().z;
+        double targetX = player.getX();
+        double targetY = player.getY();
+        double targetZ = player.getZ();
+
+        if (!initialized) {
+            smoothX = targetX;
+            smoothY = targetY;
+            smoothZ = targetZ;
+            initialized = true;
+        }
+
+        double smoothing = 0.25;
+
+        smoothX += (targetX - smoothX) * smoothing;
+        smoothY += (targetY - smoothY) * smoothing;
+        smoothZ += (targetZ - smoothZ) * smoothing;
+
+        double x = smoothX - camera.getPos().x;
+        double y = smoothY - camera.getPos().y;
+        double z = smoothZ - camera.getPos().z;
 
         matrices.push();
         matrices.translate(x, y + 0.1, z);
@@ -98,8 +120,7 @@ public class KeyInputHandler {
             float iz2 = (float) (Math.sin(a2) * inner);
             float ox2 = (float) (Math.cos(a2) * outer);
             float oz2 = (float) (Math.sin(a2) * outer);
-
-            // Quad (2 triangles)
+            
             buffer.vertex(matrix, ix1, 0, iz1).color(0, 255, 0, 150).normal(0, 1, 0);
             buffer.vertex(matrix, ox1, 0, oz1).color(0, 255, 0, 150).normal(0, 1, 0);
             buffer.vertex(matrix, ox2, 0, oz2).color(0, 255, 0, 150).normal(0, 1, 0);
