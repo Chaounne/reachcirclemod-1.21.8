@@ -120,7 +120,7 @@ public class KeyInputHandler {
             float iz2 = (float) (Math.sin(a2) * inner);
             float ox2 = (float) (Math.cos(a2) * outer);
             float oz2 = (float) (Math.sin(a2) * outer);
-            
+
             buffer.vertex(matrix, ix1, 0, iz1).color(0, 255, 0, 150).normal(0, 1, 0);
             buffer.vertex(matrix, ox1, 0, oz1).color(0, 255, 0, 150).normal(0, 1, 0);
             buffer.vertex(matrix, ox2, 0, oz2).color(0, 255, 0, 150).normal(0, 1, 0);
