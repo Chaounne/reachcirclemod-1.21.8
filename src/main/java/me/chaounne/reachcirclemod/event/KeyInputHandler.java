@@ -12,7 +12,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
@@ -61,11 +60,6 @@ public class KeyInputHandler {
 
         registerKeyInput();
     }
-
-    private static double lerp(double delta, double start, double end) {
-        return start + delta * (end - start);
-    }
-
 
     private static void renderCircle(
             MatrixStack matrices,
